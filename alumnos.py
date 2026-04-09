@@ -1,4 +1,9 @@
 def crear_alumno(alumnos):
+    """Crea un nuevo alumno y lo agrega a la lista de alumnos.
+
+    Recibe la lista de alumnos, pide los datos del alumno y evita
+    duplicados por padrón.
+    """
     padron = input("Padron: ")
     
     #evitar duplicados
@@ -9,11 +14,15 @@ def crear_alumno(alumnos):
 
     nombre = input("Nombre: ")
     carrera = input("Carrera: ")
+    apellido = input("Apellido: ")
+    dni = input("DNI: ")    
 
     alumno = {
         "padron": padron,
         "nombre": nombre,
+        "apellido": apellido,
         "carrera": carrera,
+        "dni": dni,
         "notas": {}
     }
 
@@ -22,12 +31,16 @@ def crear_alumno(alumnos):
 
 
 def listar_alumnos(alumnos):
+    """Muestra en pantalla todos los alumnos almacenados.
+
+    Si la lista está vacía, informa que no hay alumnos cargados.
+    """
     if not alumnos:
         print("No hay alumnos cargados")
         return
 
     for a in alumnos:
-        print(f'{a["padron"]} - {a["nombre"]} ({a["carrera"]})')
+        print(f'{a["padron"]} - {a["nombre"]} {a["apellido"]} ({a["carrera"]}) - DNI: {a["dni"]}')
 
 
 def buscar_alumno(alumnos, padron):
