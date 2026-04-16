@@ -69,3 +69,30 @@ def validar_nota(nota):
         return NOTA_MINIMA <= nota_float <= NOTA_MAXIMA
     except (ValueError, TypeError):
         return False
+    
+def registrar_nota(alumnos, padron, materia, nota):
+    """Registra una calificación para un alumno en una materia.
+
+    No sobreescribe si ya existe una nota; usar modificar_nota() para eso.
+    """
+    alumno = buscar_alumno(alumnos, padron)
+    if alumno is None:
+        print(f"  [ERROR] No se encontró ningún alumno con padrón {padron}.")
+        return False
+
+    materia = materia.strip()
+    if not materia:
+        print("  [ERROR] El nombre de la materia no puede estar vacío.")
+        return False
+
+    if not validar_nota(nota):
+        print(f"  [ERROR] Nota inválida. Debe ser un número entre {NOTA_MINIMA} y {NOTA_MAXIMA}.")
+        return False
+
+    if materia in alumno["notas"]:
+        print(f"  [AVISO] Ya existe una nota para '{materia}'. Use 'Modificar nota' para actualizarla.")
+        return False
+
+    alumno["notas"][materia] = float(nota)
+    print(f"  [OK] Nota {float(nota)} registrada para {alumno['nombre']} {alumno['apellido']} en '{materia}'.")
+    return True
