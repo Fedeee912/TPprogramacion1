@@ -1,3 +1,12 @@
+# Constantes de notas
+NOTA_MINIMA = 0
+NOTA_MAXIMA = 10
+NOTA_APROBACION = 4
+NOTA_PROMOCION = 7
+
+# Base de datos en memoria
+alumnos = []
+
 def crear_alumno(alumnos):
     """Crea un nuevo alumno y lo agrega a la lista de alumnos.
 
