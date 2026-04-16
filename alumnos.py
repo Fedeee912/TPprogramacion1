@@ -57,3 +57,15 @@ def buscar_alumno(alumnos, padron):
         if a["padron"] == padron:
             return a
     return None
+
+# ---------------------------------------------------------------------------
+# GESTIÓN DE NOTAS — Adrián Chiapella
+# ---------------------------------------------------------------------------
+
+def validar_nota(nota):
+    """Verifica que la nota sea un número entre 0 y 10."""
+    try:
+        nota_float = float(nota)
+        return NOTA_MINIMA <= nota_float <= NOTA_MAXIMA
+    except (ValueError, TypeError):
+        return False
