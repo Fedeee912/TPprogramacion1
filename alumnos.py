@@ -53,10 +53,7 @@ def listar_alumnos(alumnos):
 
 
 def buscar_alumno(alumnos, padron):
-    for a in alumnos:
-        if a["padron"] == padron:
-            return a
-    return None
+    return next(filter(lambda a: a["padron"] == padron, alumnos), None)
 
 # ---------------------------------------------------------------------------
 # GESTIÓN DE NOTAS — Adrián Chiapella
