@@ -93,3 +93,24 @@ def registrar_nota(alumnos, padron, materia, nota):
     alumno["notas"][materia] = float(nota)
     print(f"  [OK] Nota {float(nota)} registrada para {alumno['nombre']} {alumno['apellido']} en '{materia}'.")
     return True
+
+def modificar_nota(alumnos, padron, materia, nota_nueva):
+    """Actualiza la calificación de un alumno en una materia ya registrada."""
+    alumno = buscar_alumno(alumnos, padron)
+    if alumno is None:
+        print(f"  [ERROR] No se encontró ningún alumno con padrón {padron}.")
+        return False
+
+    materia = materia.strip()
+    if materia not in alumno["notas"]:
+        print(f"  [ERROR] No hay nota registrada para '{materia}'.")
+        return False
+
+    if not validar_nota(nota_nueva):
+        print(f"  [ERROR] Nota inválida. Debe ser un número entre {NOTA_MINIMA} y {NOTA_MAXIMA}.")
+        return False
+
+    nota_anterior = alumno["notas"][materia]
+    alumno["notas"][materia] = float(nota_nueva)
+    print(f"  [OK] Nota actualizada en '{materia}': {nota_anterior} → {float(nota_nueva)}")
+    return True
