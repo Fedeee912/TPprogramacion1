@@ -114,3 +114,39 @@ def modificar_nota(alumnos, padron, materia, nota_nueva):
     alumno["notas"][materia] = float(nota_nueva)
     print(f"  [OK] Nota actualizada en '{materia}': {nota_anterior} → {float(nota_nueva)}")
     return True
+
+def consultar_notas_alumno(alumnos, padron):
+    """Muestra todas las notas de un alumno y su promedio general."""
+    alumno = buscar_alumno(alumnos, padron)
+    if alumno is None:
+        print(f"  [ERROR] No se encontró ningún alumno con padrón {padron}.")
+        return
+
+    print(f"\n  Notas de {alumno['nombre']} {alumno['apellido']} (Padrón: {padron})")
+    print("  " + "-" * 40)
+
+    if not alumno["notas"]:
+        print("  Sin calificaciones registradas.")
+        return
+
+    for materia, nota in alumno["notas"].items():
+        if nota >= NOTA_PROMOCION:
+            estado = "Promocionado"
+        elif nota >= NOTA_APROBACION:
+            estado = "Aprobado"
+        else:
+            estado = "Desaprobado"
+        print(f"  {materia:<30} {nota:>4.1f}  [{estado}]")
+
+    notas = list(alumno["notas"].values())
+    promedio = sum(notas) / len(notas)
+    print("  " + "-" * 40)
+    print(f"  Promedio general: {promedio:.2f}")
+
+
+def calcular_promedio_alumno(alumno):
+    """Devuelve el promedio de notas de un alumno. Retorna 0.0 si no tiene notas."""
+    notas = list(alumno["notas"].values())
+    if not notas:
+        return 0.0
+    return sum(notas) / len(notas)
