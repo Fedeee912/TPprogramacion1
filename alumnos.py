@@ -14,7 +14,7 @@ def crear_alumno(alumnos):
     duplicados por padrón.
     """
     padron = input("Padron: ")
-    
+
     #evitar duplicados
     for a in alumnos:
         if a["padron"] == padron:
@@ -66,7 +66,7 @@ def validar_nota(nota):
         return NOTA_MINIMA <= nota_float <= NOTA_MAXIMA
     except (ValueError, TypeError):
         return False
-    
+
 def registrar_nota(alumnos, padron, materia, nota):
     """Registra una calificación para un alumno en una materia.
 
@@ -150,3 +150,123 @@ def calcular_promedio_alumno(alumno):
     if not notas:
         return 0.0
     return sum(notas) / len(notas)
+
+def _pedir_padron():
+    """Solicita y valida un número de padrón."""
+    padron = input("  Número de padrón: ").strip()
+    if not padron.isdigit():
+        print("  [ERROR] El padrón debe ser un número entero.")
+        return None
+    return padron
+
+
+def _pedir_nota():
+    """Solicita y valida una nota."""
+    try:
+        nota = float(input(f"  Nota ({NOTA_MINIMA}-{NOTA_MAXIMA}): ").strip())
+        if not validar_nota(nota):
+            print(f"  [ERROR] La nota debe estar entre {NOTA_MINIMA} y {NOTA_MAXIMA}.")
+            return None
+        return nota
+    except ValueError:
+        print("  [ERROR] Ingrese un número válido.")
+        return None
+
+
+def menu_alumnos():
+    """Submenú de gestión de alumnos."""
+    while True:
+        print("\n" + "=" * 45)
+        print("         GESTIÓN DE ALUMNOS")
+        print("=" * 45)
+        print("  1. Crear alumno")
+        print("  2. Listar alumnos")
+        print("  3. Buscar alumno por padrón")
+        print("  0. Volver al menú principal")
+        print("=" * 45)
+
+        eleccion = input("  Seleccione una opción: ").strip()
+
+        if eleccion == "1":
+            crear_alumno(alumnos)
+        elif eleccion == "2":
+            listar_alumnos(alumnos)
+        elif eleccion == "3":
+            padron = _pedir_padron()
+            if padron is not None:
+                alumno = buscar_alumno(alumnos, padron)
+                if alumno:
+                    print(f"\n  {alumno['padron']} - {alumno['nombre']} {alumno['apellido']} "
+                          f"({alumno['carrera']}) - DNI: {alumno['dni']}")
+                else:
+                    print(f"  [ERROR] No se encontró ningún alumno con padrón {padron}.")
+        elif eleccion == "0":
+            break
+        else:
+            print("  [ERROR] Opción inválida.")
+
+
+def menu_notas():
+    """Submenú de gestión de notas."""
+    while True:
+        print("\n" + "=" * 45)
+        print("          GESTIÓN DE NOTAS")
+        print("=" * 45)
+        print("  1. Registrar nota")
+        print("  2. Modificar nota")
+        print("  3. Consultar notas de un alumno")
+        print("  0. Volver al menú principal")
+        print("=" * 45)
+
+        eleccion = input("  Seleccione una opción: ").strip()
+
+        if eleccion == "1":
+            padron = _pedir_padron()
+            if padron is not None:
+                materia = input("  Nombre de la materia: ").strip()
+                nota = _pedir_nota()
+                if nota is not None:
+                    registrar_nota(alumnos, padron, materia, nota)
+        elif eleccion == "2":
+            padron = _pedir_padron()
+            if padron is not None:
+                materia = input("  Nombre de la materia: ").strip()
+                nota = _pedir_nota()
+                if nota is not None:
+                    modificar_nota(alumnos, padron, materia, nota)
+        elif eleccion == "3":
+            padron = _pedir_padron()
+            if padron is not None:
+                consultar_notas_alumno(alumnos, padron)
+        elif eleccion == "0":
+            break
+        else:
+            print("  [ERROR] Opción inválida.")
+
+
+def menu_principal():
+    """Menú principal del sistema."""
+    while True:
+        print("\n" + "=" * 50)
+        print("  SISTEMA DE GESTIÓN DE ALUMNOS UNIVERSITARIOS")
+        print("=" * 50)
+        print("  1. Gestión de alumnos")
+        print("  2. Gestión de notas")
+        print("  0. Salir")
+        print("=" * 50)
+
+        eleccion = input("  Seleccione una opción: ").strip()
+
+        if eleccion == "1":
+            menu_alumnos()
+        elif eleccion == "2":
+            menu_notas()
+        elif eleccion == "0":
+            print("\n  Hasta luego.")
+            break
+        else:
+            print("  [ERROR] Opción inválida.")
+
+
+if __name__ == "__main__":
+    menu_principal()
