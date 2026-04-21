@@ -55,6 +55,45 @@ def listar_alumnos(alumnos):
 def buscar_alumno(alumnos, padron):
     return next(filter(lambda a: a["padron"] == padron, alumnos), None)
 
+
+def actualizar_alumno(alumnos, padron):
+    """Actualiza los datos personales de un alumno existente."""
+    alumno = buscar_alumno(alumnos, padron)
+    if alumno is None:
+        print(f"  [ERROR] No se encontró ningún alumno con padrón {padron}.")
+        return False
+
+    print("  Deje en blanco para conservar el valor actual.")
+    nombre = input(f"  Nombre [{alumno['nombre']}]: ").strip()
+    apellido = input(f"  Apellido [{alumno['apellido']}]: ").strip()
+    carrera = input(f"  Carrera [{alumno['carrera']}]: ").strip()
+    dni = input(f"  DNI [{alumno['dni']}]: ").strip()
+
+    if nombre:
+        alumno["nombre"] = nombre
+    if apellido:
+        alumno["apellido"] = apellido
+    if carrera:
+        alumno["carrera"] = carrera
+    if dni:
+        alumno["dni"] = dni
+
+    print("  [OK] Datos del alumno actualizados correctamente.")
+    return True
+
+
+def eliminar_alumno(alumnos, padron):
+    """Elimina un alumno de la lista por su padrón."""
+    alumno = buscar_alumno(alumnos, padron)
+    if alumno is None:
+        print(f"  [ERROR] No se encontró ningún alumno con padrón {padron}.")
+        return False
+
+    alumnos.remove(alumno)
+    print(f"  [OK] Alumno con padrón {padron} eliminado correctamente.")
+    return True
+
+
 # ---------------------------------------------------------------------------
 # GESTIÓN DE NOTAS — Adrián Chiapella
 # ---------------------------------------------------------------------------
@@ -182,6 +221,8 @@ def menu_alumnos():
         print("  1. Crear alumno")
         print("  2. Listar alumnos")
         print("  3. Buscar alumno por padrón")
+        print("  4. Actualizar alumno")
+        print("  5. Eliminar alumno")
         print("  0. Volver al menú principal")
         print("=" * 45)
 
@@ -200,6 +241,14 @@ def menu_alumnos():
                           f"({alumno['carrera']}) - DNI: {alumno['dni']}")
                 else:
                     print(f"  [ERROR] No se encontró ningún alumno con padrón {padron}.")
+        elif eleccion == "4":
+            padron = _pedir_padron()
+            if padron is not None:
+                actualizar_alumno(alumnos, padron)
+        elif eleccion == "5":
+            padron = _pedir_padron()
+            if padron is not None:
+                eliminar_alumno(alumnos, padron)
         elif eleccion == "0":
             break
         else:
