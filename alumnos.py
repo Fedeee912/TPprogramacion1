@@ -6,6 +6,7 @@ NOTA_PROMOCION = 7
 
 # Base de datos en memoria
 alumnos = []
+padrones = set()
 
 def crear_alumno(alumnos):
     """Crea un nuevo alumno y lo agrega a la lista de alumnos.
@@ -13,13 +14,11 @@ def crear_alumno(alumnos):
     Recibe la lista de alumnos, pide los datos del alumno y evita
     duplicados por padrón.
     """
-    padron = input("Padron: ")
+    padron = input("Padron: ").strip()
 
-    #evitar duplicados
-    for a in alumnos:
-        if a["padron"] == padron:
-            print("Ya existe un alumno con ese padron")
-            return
+    if padron in padrones:
+        print("Ya existe un alumno con ese padron")
+        return
 
     nombre = input("Nombre: ")
     carrera = input("Carrera: ")
@@ -36,6 +35,7 @@ def crear_alumno(alumnos):
     }
 
     alumnos.append(alumno)
+    padrones.add(padron)
     print("Alumno creado correctamente")
 
 
@@ -49,11 +49,20 @@ def listar_alumnos(alumnos):
         return
 
     for a in alumnos:
-        print(f'{a["padron"]} - {a["nombre"]} {a["apellido"]} ({a["carrera"]}) - DNI: {a["dni"]}')
+        resumen = alumno_a_tupla(a)
+        print(f'{resumen[0]} - {resumen[1]} {resumen[2]} ({resumen[3]}) - DNI: {resumen[4]}')
 
 
 def buscar_alumno(alumnos, padron):
     return next(filter(lambda a: a["padron"] == padron, alumnos), None)
+
+
+def alumno_a_tupla(alumno):
+    """Devuelve una tupla del alumno.
+
+    Formato: (padron, nombre, apellido, carrera, dni)
+    """
+    return (alumno["padron"], alumno["nombre"], alumno["apellido"], alumno["carrera"], alumno["dni"])
 
 
 def actualizar_alumno(alumnos, padron):
@@ -90,6 +99,7 @@ def eliminar_alumno(alumnos, padron):
         return False
 
     alumnos.remove(alumno)
+    padrones.discard(padron)
     print(f"  [OK] Alumno con padrón {padron} eliminado correctamente.")
     return True
 
