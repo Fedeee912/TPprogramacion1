@@ -1,3 +1,5 @@
+import re
+
 # Constantes de notas
 NOTA_MINIMA = 0
 NOTA_MAXIMA = 10
@@ -201,10 +203,10 @@ def calcular_promedio_alumno(alumno):
     return sum(notas) / len(notas)
 
 def _pedir_padron():
-    """Solicita y valida un número de padrón."""
+    """Solicita y valida un número de padrón (4 a 6 dígitos)."""
     padron = input("  Número de padrón: ").strip()
-    if not padron.isdigit():
-        print("  [ERROR] El padrón debe ser un número entero.")
+    if not re.match(r'^\d{4,6}$', padron):
+        print("  [ERROR] El padrón debe tener entre 4 y 6 dígitos numéricos.")
         return None
     return padron
 
