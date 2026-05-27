@@ -218,6 +218,13 @@ def calcular_promedio_alumno(alumno):
         return 0.0
     return sum(notas) / len(notas)
 
+def calcular_promedio_materia(alumnos, materia):
+    """Calcula el promedio general de una materia entre todos los alumnos que la tienen registrada."""
+    notas = [a["notas"][materia] for a in alumnos if materia in a["notas"]]
+    if not notas:
+        return None
+    return sum(notas) / len(notas)
+
 def _pedir_padron():
     """Solicita y valida un número de padrón (4 a 6 dígitos)."""
     padron = input("  Número de padrón: ").strip()
@@ -293,6 +300,7 @@ def menu_notas():
         print("  2. Modificar nota")
         print("  3. Eliminar nota")
         print("  4. Consultar notas de un alumno")
+        print("  5. Promedio de una materia")
         print("  0. Volver al menú principal")
         print("=" * 45)
 
@@ -321,6 +329,13 @@ def menu_notas():
             padron = _pedir_padron()
             if padron is not None:
                 consultar_notas_alumno(alumnos, padron)
+        elif eleccion == "5":
+            materia = input("  Nombre de la materia: ").strip()
+            promedio = calcular_promedio_materia(alumnos, materia)
+            if promedio is None:
+                print(f"  [INFO] Ningún alumno tiene nota registrada para '{materia}'.")
+            else:
+                print(f"  Promedio de '{materia}': {promedio:.2f}")
         elif eleccion == "0":
             break
         else:
