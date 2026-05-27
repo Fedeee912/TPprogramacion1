@@ -166,6 +166,22 @@ def modificar_nota(alumnos, padron, materia, nota_nueva):
     print(f"  [OK] Nota actualizada en '{materia}': {nota_anterior} → {float(nota_nueva)}")
     return True
 
+def eliminar_nota(alumnos, padron, materia):
+    """Elimina la calificación de un alumno en una materia registrada."""
+    alumno = buscar_alumno(alumnos, padron)
+    if alumno is None:
+        print(f"  [ERROR] No se encontró ningún alumno con padrón {padron}.")
+        return False
+
+    materia = materia.strip()
+    if materia not in alumno["notas"]:
+        print(f"  [ERROR] No hay nota registrada para '{materia}'.")
+        return False
+
+    nota_eliminada = alumno["notas"].pop(materia)
+    print(f"  [OK] Nota {nota_eliminada} de '{materia}' eliminada para {alumno['nombre']} {alumno['apellido']}.")
+    return True
+
 def consultar_notas_alumno(alumnos, padron):
     """Muestra todas las notas de un alumno y su promedio general."""
     alumno = buscar_alumno(alumnos, padron)
@@ -275,7 +291,8 @@ def menu_notas():
         print("=" * 45)
         print("  1. Registrar nota")
         print("  2. Modificar nota")
-        print("  3. Consultar notas de un alumno")
+        print("  3. Eliminar nota")
+        print("  4. Consultar notas de un alumno")
         print("  0. Volver al menú principal")
         print("=" * 45)
 
@@ -296,6 +313,11 @@ def menu_notas():
                 if nota is not None:
                     modificar_nota(alumnos, padron, materia, nota)
         elif eleccion == "3":
+            padron = _pedir_padron()
+            if padron is not None:
+                materia = input("  Nombre de la materia: ").strip()
+                eliminar_nota(alumnos, padron, materia)
+        elif eleccion == "4":
             padron = _pedir_padron()
             if padron is not None:
                 consultar_notas_alumno(alumnos, padron)
