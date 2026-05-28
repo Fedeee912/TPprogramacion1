@@ -225,6 +225,30 @@ def calcular_promedio_materia(alumnos, materia):
         return None
     return sum(notas) / len(notas)
 
+def listar_alumnos_por_materia(alumnos, materia):
+    """Muestra todos los alumnos que tienen nota en una materia, con su estado y el promedio general."""
+    encontrados = [(a, a["notas"][materia]) for a in alumnos if materia in a["notas"]]
+
+    if not encontrados:
+        print(f"  [INFO] Ningún alumno tiene nota registrada para '{materia}'.")
+        return
+
+    print(f"\n  Alumnos en '{materia}'")
+    print("  " + "-" * 50)
+
+    for alumno, nota in encontrados:
+        if nota >= NOTA_PROMOCION:
+            estado = "Promocionado"
+        elif nota >= NOTA_APROBACION:
+            estado = "Aprobado"
+        else:
+            estado = "Desaprobado"
+        print(f"  {alumno['padron']} - {alumno['nombre']} {alumno['apellido']:<20} {nota:>4.1f}  [{estado}]")
+
+    promedio = sum(n for _, n in encontrados) / len(encontrados)
+    print("  " + "-" * 50)
+    print(f"  Promedio de la materia: {promedio:.2f}  ({len(encontrados)} alumno{'s' if len(encontrados) != 1 else ''})")
+
 def _pedir_padron():
     """Solicita y valida un número de padrón (4 a 6 dígitos)."""
     padron = input("  Número de padrón: ").strip()
@@ -300,7 +324,8 @@ def menu_notas():
         print("  2. Modificar nota")
         print("  3. Eliminar nota")
         print("  4. Consultar notas de un alumno")
-        print("  5. Promedio de una materia")
+        print("  5. Ver alumnos por materia")
+        print("  6. Promedio de una materia")
         print("  0. Volver al menú principal")
         print("=" * 45)
 
@@ -330,6 +355,9 @@ def menu_notas():
             if padron is not None:
                 consultar_notas_alumno(alumnos, padron)
         elif eleccion == "5":
+            materia = input("  Nombre de la materia: ").strip()
+            listar_alumnos_por_materia(alumnos, materia)
+        elif eleccion == "6":
             materia = input("  Nombre de la materia: ").strip()
             promedio = calcular_promedio_materia(alumnos, materia)
             if promedio is None:
