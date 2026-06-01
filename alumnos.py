@@ -250,10 +250,10 @@ def listar_alumnos_por_materia(alumnos, materia):
     print(f"  Promedio de la materia: {promedio:.2f}  ({len(encontrados)} alumno{'s' if len(encontrados) != 1 else ''})")
 
 def _pedir_padron():
-    """Solicita y valida un número de padrón (4 a 6 dígitos)."""
+    """Solicita y valida un número de padrón (1 a 6 dígitos)."""
     padron = input("  Número de padrón: ").strip()
-    if not re.match(r'^\d{4,6}$', padron):
-        print("  [ERROR] El padrón debe tener entre 4 y 6 dígitos numéricos.")
+    if not re.match(r'^\d{1,6}$', padron):
+        print("  [ERROR] El padrón debe tener entre 1 y 6 dígitos numéricos.")
         return None
     return padron
 
