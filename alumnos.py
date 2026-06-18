@@ -249,6 +249,27 @@ def listar_alumnos_por_materia(alumnos, materia):
     print("  " + "-" * 50)
     print(f"  Promedio de la materia: {promedio:.2f}  ({len(encontrados)} alumno{'s' if len(encontrados) != 1 else ''})")
 
+# ---------------------------------------------------------------------------
+# REPORTES Y ESTADÍSTICAS — Matías Yujra
+# ---------------------------------------------------------------------------
+
+def clasificar_estado(nota):
+    """Devuelve el estado académico según la nota: Promocionado, Aprobado o Desaprobado."""
+    if nota >= NOTA_PROMOCION:
+        return "Promocionado"
+    elif nota >= NOTA_APROBACION:
+        return "Aprobado"
+    return "Desaprobado"
+
+
+def obtener_materias(alumnos):
+    """Devuelve un conjunto con todas las materias que tienen al menos una nota registrada."""
+    materias = set()
+    for a in alumnos:
+        materias.update(a["notas"].keys())
+    return materias
+
+
 def _pedir_padron():
     """Solicita y valida un número de padrón (1 a 6 dígitos)."""
     padron = input("  Número de padrón: ").strip()
