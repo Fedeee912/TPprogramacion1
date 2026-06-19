@@ -106,9 +106,6 @@ def eliminar_alumno(alumnos, padron):
     return True
 
 
-# ---------------------------------------------------------------------------
-# GESTIÓN DE NOTAS — Adrián Chiapella
-# ---------------------------------------------------------------------------
 
 def validar_nota(nota):
     """Verifica que la nota sea un número entre 0 y 10."""
@@ -249,9 +246,7 @@ def listar_alumnos_por_materia(alumnos, materia):
     print("  " + "-" * 50)
     print(f"  Promedio de la materia: {promedio:.2f}  ({len(encontrados)} alumno{'s' if len(encontrados) != 1 else ''})")
 
-# ---------------------------------------------------------------------------
-# REPORTES Y ESTADÍSTICAS — Matías Yujra
-# ---------------------------------------------------------------------------
+
 
 def clasificar_estado(nota):
     """Devuelve el estado académico según la nota: Promocionado, Aprobado o Desaprobado."""
@@ -268,6 +263,50 @@ def obtener_materias(alumnos):
     for a in alumnos:
         materias.update(a["notas"].keys())
     return materias
+
+
+def estadisticas_materia(alumnos, materia):
+    """Calcula estadísticas de una materia: total de alumnos con nota, aprobados,
+    desaprobados, promocionados, promedio y tasa de promoción.
+
+    Devuelve un diccionario con los resultados, o None si nadie tiene nota en esa materia.
+    """
+    notas = [a["notas"][materia] for a in alumnos if materia in a["notas"]]
+    if not notas:
+        return None
+
+    total = len(notas)
+    promocionados = sum(1 for n in notas if n >= NOTA_PROMOCION)
+    aprobados = sum(1 for n in notas if NOTA_APROBACION <= n < NOTA_PROMOCION)
+    desaprobados = sum(1 for n in notas if n < NOTA_APROBACION)
+
+    return {
+        "materia": materia,
+        "total": total,
+        "promocionados": promocionados,
+        "aprobados": aprobados,
+        "desaprobados": desaprobados,
+        "promedio": sum(notas) / total,
+        "tasa_promocion": promocionados / total * 100,
+    }
+
+
+def mostrar_estadisticas_materia(alumnos, materia):
+    """Muestra por pantalla las estadísticas de una materia."""
+    est = estadisticas_materia(alumnos, materia)
+    if est is None:
+        print(f"  [INFO] Ningún alumno tiene nota registrada para '{materia}'.")
+        return
+
+    print(f"\n  Estadísticas de '{est['materia']}'")
+    print("  " + "-" * 50)
+    print(f"  Alumnos con nota:       {est['total']}")
+    print(f"  Promocionados (>= {NOTA_PROMOCION}):   {est['promocionados']}")
+    print(f"  Aprobados ({NOTA_APROBACION} a <{NOTA_PROMOCION}):     {est['aprobados']}")
+    print(f"  Desaprobados (< {NOTA_APROBACION}):     {est['desaprobados']}")
+    print("  " + "-" * 50)
+    print(f"  Promedio de la clase:   {est['promedio']:.2f}")
+    print(f"  Tasa de promoción:      {est['tasa_promocion']:.1f}%")
 
 
 def _pedir_padron():
