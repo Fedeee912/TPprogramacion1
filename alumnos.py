@@ -326,6 +326,25 @@ def reporte_promociones_desaprobaciones(alumnos):
         print(f"  {materia:<30}{est['promocionados']:>12}{est['desaprobados']:>12}")
 
 
+def reporte_por_carrera(alumnos):
+    """Muestra el desempeño por carrera: cantidad de alumnos y promedio general de notas."""
+    carreras = {a["carrera"] for a in alumnos}
+    if not carreras:
+        print("  [INFO] No hay alumnos registrados.")
+        return
+
+    print("\n  Reporte por carrera")
+    print("  " + "-" * 55)
+    print(f"  {'Carrera':<30}{'Alumnos':>10}{'Promedio':>12}")
+    print("  " + "-" * 55)
+
+    for carrera in sorted(carreras):
+        alumnos_carrera = [a for a in alumnos if a["carrera"] == carrera]
+        notas = [n for a in alumnos_carrera for n in a["notas"].values()]
+        promedio = sum(notas) / len(notas) if notas else 0.0
+        print(f"  {carrera:<30}{len(alumnos_carrera):>10}{promedio:>12.2f}")
+
+
 def _pedir_padron():
     """Solicita y valida un número de padrón (1 a 6 dígitos)."""
     padron = input("  Número de padrón: ").strip()
