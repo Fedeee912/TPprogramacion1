@@ -345,6 +345,31 @@ def reporte_por_carrera(alumnos):
         print(f"  {carrera:<30}{len(alumnos_carrera):>10}{promedio:>12.2f}")
 
 
+def resumen_ejecutivo(alumnos):
+    """Muestra un resumen general: totales de alumnos, materias, notas y tasa de promoción global."""
+    if not alumnos:
+        print("  [INFO] No hay alumnos registrados.")
+        return
+
+    materias = obtener_materias(alumnos)
+    todas_las_notas = [n for a in alumnos for n in a["notas"].values()]
+
+    print("\n  Resumen ejecutivo")
+    print("  " + "=" * 45)
+    print(f"  Total de alumnos:   {len(alumnos)}")
+    print(f"  Total de materias:  {len(materias)}")
+    print(f"  Total de notas:     {len(todas_las_notas)}")
+
+    if todas_las_notas:
+        promocionados = sum(1 for n in todas_las_notas if n >= NOTA_PROMOCION)
+        promedio = sum(todas_las_notas) / len(todas_las_notas)
+        print(f"  Promedio general:   {promedio:.2f}")
+        print(f"  Tasa de promoción:  {promocionados / len(todas_las_notas) * 100:.1f}%")
+    else:
+        print("  Sin notas registradas todavía.")
+    print("  " + "=" * 45)
+
+
 def _pedir_padron():
     """Solicita y valida un número de padrón (1 a 6 dígitos)."""
     padron = input("  Número de padrón: ").strip()
@@ -466,6 +491,36 @@ def menu_notas():
             print("  [ERROR] Opción inválida.")
 
 
+def menu_reportes():
+    """Submenú de reportes y estadísticas."""
+    while True:
+        print("\n" + "=" * 45)
+        print("       REPORTES Y ESTADÍSTICAS")
+        print("=" * 45)
+        print("  1. Estadísticas de una materia")
+        print("  2. Promociones y desaprobaciones por materia")
+        print("  3. Reporte por carrera")
+        print("  4. Resumen ejecutivo")
+        print("  0. Volver al menú principal")
+        print("=" * 45)
+
+        eleccion = input("  Seleccione una opción: ").strip()
+
+        if eleccion == "1":
+            materia = input("  Nombre de la materia: ").strip()
+            mostrar_estadisticas_materia(alumnos, materia)
+        elif eleccion == "2":
+            reporte_promociones_desaprobaciones(alumnos)
+        elif eleccion == "3":
+            reporte_por_carrera(alumnos)
+        elif eleccion == "4":
+            resumen_ejecutivo(alumnos)
+        elif eleccion == "0":
+            break
+        else:
+            print("  [ERROR] Opción inválida.")
+
+
 def menu_principal():
     """Menú principal del sistema."""
     while True:
@@ -474,6 +529,7 @@ def menu_principal():
         print("=" * 50)
         print("  1. Gestión de alumnos")
         print("  2. Gestión de notas")
+        print("  3. Reportes y estadísticas")
         print("  0. Salir")
         print("=" * 50)
 
@@ -483,6 +539,8 @@ def menu_principal():
             menu_alumnos()
         elif eleccion == "2":
             menu_notas()
+        elif eleccion == "3":
+            menu_reportes()
         elif eleccion == "0":
             print("\n  Hasta luego.")
             break
