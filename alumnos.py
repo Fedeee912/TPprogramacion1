@@ -309,6 +309,23 @@ def mostrar_estadisticas_materia(alumnos, materia):
     print(f"  Tasa de promoción:      {est['tasa_promocion']:.1f}%")
 
 
+def reporte_promociones_desaprobaciones(alumnos):
+    """Muestra, para cada materia registrada, cuántos alumnos promocionaron y cuántos desaprobaron."""
+    materias = obtener_materias(alumnos)
+    if not materias:
+        print("  [INFO] No hay notas registradas en el sistema.")
+        return
+
+    print("\n  Promociones y desaprobaciones por materia")
+    print("  " + "-" * 58)
+    print(f"  {'Materia':<30}{'Promocion.':>12}{'Desaprob.':>12}")
+    print("  " + "-" * 58)
+
+    for materia in sorted(materias):
+        est = estadisticas_materia(alumnos, materia)
+        print(f"  {materia:<30}{est['promocionados']:>12}{est['desaprobados']:>12}")
+
+
 def _pedir_padron():
     """Solicita y valida un número de padrón (1 a 6 dígitos)."""
     padron = input("  Número de padrón: ").strip()
