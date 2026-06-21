@@ -261,7 +261,8 @@ def obtener_materias(alumnos):
     """Devuelve un conjunto con todas las materias que tienen al menos una nota registrada."""
     materias = set()
     for a in alumnos:
-        materias.update(a["notas"].keys())
+        for materia in a["notas"].keys():
+            materias.add(materia)
     return materias
 
 
