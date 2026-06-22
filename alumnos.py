@@ -43,6 +43,7 @@ def crear_alumno(alumnos):
 
     alumnos.append(alumno)
     padrones.add(padron)
+    guardar_datos(alumnos)
     print("Alumno creado correctamente")
 
 
@@ -94,6 +95,7 @@ def actualizar_alumno(alumnos, padron):
     if dni:
         alumno["dni"] = dni
 
+    guardar_datos(alumnos)
     print("  [OK] Datos del alumno actualizados correctamente.")
     return True
 
@@ -107,6 +109,7 @@ def eliminar_alumno(alumnos, padron):
 
     alumnos.remove(alumno)
     padrones.discard(padron)
+    guardar_datos(alumnos)
     print(f"  [OK] Alumno con padrón {padron} eliminado correctamente.")
     return True
 
@@ -144,6 +147,7 @@ def registrar_nota(alumnos, padron, materia, nota):
         return False
 
     alumno["notas"][materia] = float(nota)
+    guardar_datos(alumnos)
     print(f"  [OK] Nota {float(nota)} registrada para {alumno['nombre']} {alumno['apellido']} en '{materia}'.")
     return True
 
@@ -165,6 +169,7 @@ def modificar_nota(alumnos, padron, materia, nota_nueva):
 
     nota_anterior = alumno["notas"][materia]
     alumno["notas"][materia] = float(nota_nueva)
+    guardar_datos(alumnos)
     print(f"  [OK] Nota actualizada en '{materia}': {nota_anterior} → {float(nota_nueva)}")
     return True
 
@@ -181,6 +186,7 @@ def eliminar_nota(alumnos, padron, materia):
         return False
 
     nota_eliminada = alumno["notas"].pop(materia)
+    guardar_datos(alumnos)
     print(f"  [OK] Nota {nota_eliminada} de '{materia}' eliminada para {alumno['nombre']} {alumno['apellido']}.")
     return True
 
@@ -573,4 +579,7 @@ def menu_principal():
 
 
 if __name__ == "__main__":
+    for alumno_guardado in cargar_datos():
+        alumnos.append(alumno_guardado)
+        padrones.add(alumno_guardado["padron"])
     menu_principal()
