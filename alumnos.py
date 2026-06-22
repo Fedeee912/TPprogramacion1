@@ -400,6 +400,12 @@ def cargar_datos():
         return []
 
 
+def _confirmar(mensaje):
+    """Pide confirmación al usuario. Devuelve True solo si responde 's'."""
+    respuesta = input(f"  {mensaje} (s/n): ").strip().lower()
+    return respuesta == "s"
+
+
 def _pedir_padron():
     """Solicita y valida un número de padrón (1 a 6 dígitos)."""
     padron = input("  Número de padrón: ").strip()
@@ -458,7 +464,10 @@ def menu_alumnos():
         elif eleccion == "5":
             padron = _pedir_padron()
             if padron is not None:
-                eliminar_alumno(alumnos, padron)
+                if _confirmar(f"¿Seguro que querés eliminar al alumno {padron}?"):
+                    eliminar_alumno(alumnos, padron)
+                else:
+                    print("  Operación cancelada.")
         elif eleccion == "0":
             break
         else:
@@ -500,7 +509,10 @@ def menu_notas():
             padron = _pedir_padron()
             if padron is not None:
                 materia = input("  Nombre de la materia: ").strip()
-                eliminar_nota(alumnos, padron, materia)
+                if _confirmar(f"¿Seguro que querés eliminar la nota de '{materia}'?"):
+                    eliminar_nota(alumnos, padron, materia)
+                else:
+                    print("  Operación cancelada.")
         elif eleccion == "4":
             padron = _pedir_padron()
             if padron is not None:
