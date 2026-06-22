@@ -70,7 +70,8 @@ def listar_alumnos(alumnos):
 
 
 def buscar_alumno(alumnos, padron):
-    return next(filter(lambda a: a["padron"] == padron, alumnos), None)
+    resultado = list(filter(lambda a: a["padron"] == padron, alumnos))
+    return resultado[0] if resultado else None
 
 
 def alumno_a_tupla(alumno):
@@ -126,7 +127,7 @@ def eliminar_alumno(alumnos, padron):
         print(f"  [ERROR] No se encontró ningún alumno con padrón {padron}.")
         return False
 
-    alumnos.remove(alumno)
+    alumnos[:] = [a for a in alumnos if a["padron"] != padron]
     padrones.discard(padron)
     guardar_datos(alumnos, materias)
     print(f"  [OK] Alumno con padrón {padron} eliminado correctamente.")
@@ -407,7 +408,7 @@ def registrar_materia(materias):
     if not nombre:
         print("  [ERROR] El nombre no puede estar vacío.")
         return
-    if any(m["nombre"].lower() == nombre.lower() for m in materias):
+    if list(filter(lambda m: m["nombre"].lower() == nombre.lower(), materias)):
         print("  [AVISO] Ya existe una materia con ese nombre.")
         return
     codigo = input("  Código (ej: PROG-001): ").strip()
@@ -498,8 +499,8 @@ def cargar_datos():
 
 def buscar_por_nombre(alumnos, texto):
     """Devuelve los alumnos cuyo nombre o apellido contiene el texto (sin distinguir mayúsculas)."""
-    patron = re.compile(re.escape(texto.strip()), re.IGNORECASE)
-    return [a for a in alumnos if re.findall(patron, a["nombre"] + " " + a["apellido"])]
+    texto = texto.strip().lower()
+    return [a for a in alumnos if re.findall(texto, a["nombre"].lower() + " " + a["apellido"].lower())]
 
 
 def buscar_por_carrera(alumnos, carrera):
@@ -510,7 +511,7 @@ def buscar_por_carrera(alumnos, carrera):
 
 def buscar_por_estado(alumnos, estado):
     """Devuelve los alumnos que tienen el estado académico indicado."""
-    estado = estado.strip().capitalize()
+    estado = estado.strip().title()
     if estado not in ("Activo", "Inactivo", "Egresado"):
         print("  [ERROR] Estado inválido. Opciones: Activo, Inactivo, Egresado.")
         return []
