@@ -400,6 +400,18 @@ def cargar_datos():
         return []
 
 
+def buscar_por_nombre(alumnos, texto):
+    """Devuelve los alumnos cuyo nombre o apellido contiene el texto (sin distinguir mayúsculas)."""
+    texto = texto.strip().lower()
+    return [a for a in alumnos if texto in a["nombre"].lower() or texto in a["apellido"].lower()]
+
+
+def buscar_por_carrera(alumnos, carrera):
+    """Devuelve los alumnos de una carrera (sin distinguir mayúsculas)."""
+    carrera = carrera.strip().lower()
+    return [a for a in alumnos if a["carrera"].lower() == carrera]
+
+
 def _confirmar(mensaje):
     """Pide confirmación al usuario. Devuelve True solo si responde 's'."""
     respuesta = input(f"  {mensaje} (s/n): ").strip().lower()
@@ -439,6 +451,8 @@ def menu_alumnos():
         print("  3. Buscar alumno por padrón")
         print("  4. Actualizar alumno")
         print("  5. Eliminar alumno")
+        print("  6. Buscar por nombre o apellido")
+        print("  7. Buscar por carrera")
         print("  0. Volver al menú principal")
         print("=" * 45)
 
@@ -468,6 +482,22 @@ def menu_alumnos():
                     eliminar_alumno(alumnos, padron)
                 else:
                     print("  Operación cancelada.")
+        elif eleccion == "6":
+            texto = input("  Nombre o apellido a buscar: ").strip()
+            encontrados = buscar_por_nombre(alumnos, texto)
+            if not encontrados:
+                print("  [INFO] No se encontraron alumnos.")
+            else:
+                for a in encontrados:
+                    print(f"  {a['padron']} - {a['nombre']} {a['apellido']} ({a['carrera']})")
+        elif eleccion == "7":
+            carrera = input("  Carrera a buscar: ").strip()
+            encontrados = buscar_por_carrera(alumnos, carrera)
+            if not encontrados:
+                print("  [INFO] No se encontraron alumnos en esa carrera.")
+            else:
+                for a in encontrados:
+                    print(f"  {a['padron']} - {a['nombre']} {a['apellido']} ({a['carrera']})")
         elif eleccion == "0":
             break
         else:
