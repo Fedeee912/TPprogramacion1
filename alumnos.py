@@ -527,8 +527,8 @@ def _confirmar(mensaje):
 def _pedir_padron():
     """Solicita y valida un número de padrón (1 a 6 dígitos)."""
     padron = input("  Número de padrón: ").strip()
-    if not re.match(r'^\d{1,6}$', padron):
-        print("  [ERROR] El padrón debe tener entre 1 y 6 dígitos numéricos.")
+    if not re.match(r'^\d{4,6}$', padron):
+        print("  [ERROR] El padrón debe tener entre 4 y 6 dígitos numéricos.")
         return None
     return padron
 
