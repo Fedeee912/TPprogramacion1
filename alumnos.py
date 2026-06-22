@@ -430,6 +430,15 @@ def buscar_por_carrera(alumnos, carrera):
     return [a for a in alumnos if a["carrera"].lower() == carrera]
 
 
+def buscar_por_estado(alumnos, estado):
+    """Devuelve los alumnos que tienen el estado académico indicado."""
+    estado = estado.strip().capitalize()
+    if estado not in ("Activo", "Inactivo", "Egresado"):
+        print("  [ERROR] Estado inválido. Opciones: Activo, Inactivo, Egresado.")
+        return []
+    return [a for a in alumnos if a.get("estado", "Activo") == estado]
+
+
 def _confirmar(mensaje):
     """Pide confirmación al usuario. Devuelve True solo si responde 's'."""
     respuesta = input(f"  {mensaje} (s/n): ").strip().lower()
@@ -471,6 +480,7 @@ def menu_alumnos():
         print("  5. Eliminar alumno")
         print("  6. Buscar por nombre o apellido")
         print("  7. Buscar por carrera")
+        print("  8. Buscar por estado (Activo/Inactivo/Egresado)")
         print("  0. Volver al menú principal")
         print("=" * 45)
 
@@ -516,6 +526,14 @@ def menu_alumnos():
             else:
                 for a in encontrados:
                     print(f"  {a['padron']} - {a['nombre']} {a['apellido']} ({a['carrera']})")
+        elif eleccion == "8":
+            estado = input("  Estado a buscar (Activo/Inactivo/Egresado): ").strip()
+            encontrados = buscar_por_estado(alumnos, estado)
+            if not encontrados:
+                print("  [INFO] No se encontraron alumnos con ese estado.")
+            else:
+                for a in encontrados:
+                    print(f"  {a['padron']} - {a['nombre']} {a['apellido']} ({a['carrera']}) [{a.get('estado', 'Activo')}]")
         elif eleccion == "0":
             break
         else:
