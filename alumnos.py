@@ -30,7 +30,12 @@ def crear_alumno(alumnos):
     nombre = input("Nombre: ")
     carrera = input("Carrera: ")
     apellido = input("Apellido: ")
-    dni = input("DNI: ")    
+    dni = input("DNI: ")
+
+    email = input("Email: ").strip()
+    while not re.search(r'^[\w.+-]+@[\w.-]+\.\w+$', email):
+        print("  [ERROR] Email inválido. Ejemplo: juan@universidad.edu")
+        email = input("Email: ").strip()
 
     alumno = {
         "padron": padron,
@@ -38,6 +43,8 @@ def crear_alumno(alumnos):
         "apellido": apellido,
         "carrera": carrera,
         "dni": dni,
+        "email": email,
+        "estado": "Activo",
         "notas": {}
     }
 
@@ -58,7 +65,7 @@ def listar_alumnos(alumnos):
 
     for a in alumnos:
         resumen = alumno_a_tupla(a)
-        print(f'{resumen[0]} - {resumen[1]} {resumen[2]} ({resumen[3]}) - DNI: {resumen[4]}')
+        print(f'{resumen[0]} - {resumen[1]} {resumen[2]} ({resumen[3]}) - DNI: {resumen[4]} - {resumen[5]} [{resumen[6]}]')
 
 
 def buscar_alumno(alumnos, padron):
@@ -70,7 +77,7 @@ def alumno_a_tupla(alumno):
 
     Formato: (padron, nombre, apellido, carrera, dni)
     """
-    return (alumno["padron"], alumno["nombre"], alumno["apellido"], alumno["carrera"], alumno["dni"])
+    return (alumno["padron"], alumno["nombre"], alumno["apellido"], alumno["carrera"], alumno["dni"], alumno.get("email", ""), alumno.get("estado", "Activo"))
 
 
 def actualizar_alumno(alumnos, padron):
@@ -85,6 +92,8 @@ def actualizar_alumno(alumnos, padron):
     apellido = input(f"  Apellido [{alumno['apellido']}]: ").strip()
     carrera = input(f"  Carrera [{alumno['carrera']}]: ").strip()
     dni = input(f"  DNI [{alumno['dni']}]: ").strip()
+    email = input(f"  Email [{alumno.get('email', '')}]: ").strip()
+    estado = input(f"  Estado [{alumno.get('estado', 'Activo')}] (Activo/Inactivo/Egresado): ").strip()
 
     if nombre:
         alumno["nombre"] = nombre
@@ -94,6 +103,15 @@ def actualizar_alumno(alumnos, padron):
         alumno["carrera"] = carrera
     if dni:
         alumno["dni"] = dni
+    if email:
+        if re.search(r'^[\w.+-]+@[\w.-]+\.\w+$', email):
+            alumno["email"] = email
+        else:
+            print("  [AVISO] Email inválido, se conserva el anterior.")
+    if estado in ("Activo", "Inactivo", "Egresado"):
+        alumno["estado"] = estado
+    elif estado:
+        print("  [AVISO] Estado inválido, se conserva el anterior.")
 
     guardar_datos(alumnos)
     print("  [OK] Datos del alumno actualizados correctamente.")
@@ -402,8 +420,8 @@ def cargar_datos():
 
 def buscar_por_nombre(alumnos, texto):
     """Devuelve los alumnos cuyo nombre o apellido contiene el texto (sin distinguir mayúsculas)."""
-    texto = texto.strip().lower()
-    return [a for a in alumnos if texto in a["nombre"].lower() or texto in a["apellido"].lower()]
+    patron = re.compile(re.escape(texto.strip()), re.IGNORECASE)
+    return [a for a in alumnos if re.findall(patron, a["nombre"] + " " + a["apellido"])]
 
 
 def buscar_por_carrera(alumnos, carrera):
