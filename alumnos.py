@@ -14,6 +14,7 @@ NOTA_PROMOCION = 7
 # Base de datos en memoria
 alumnos = []
 padrones = set()
+materias = []
 
 def crear_alumno(alumnos):
     """Crea un nuevo alumno y lo agrega a la lista de alumnos.
@@ -400,6 +401,52 @@ def resumen_ejecutivo(alumnos):
     print("  " + "=" * 45)
 
 
+def registrar_materia(materias):
+    """Registra una nueva materia en la lista de materias."""
+    nombre = input("  Nombre de la materia: ").strip()
+    if not nombre:
+        print("  [ERROR] El nombre no puede estar vacío.")
+        return
+    if any(m["nombre"].lower() == nombre.lower() for m in materias):
+        print("  [AVISO] Ya existe una materia con ese nombre.")
+        return
+    codigo = input("  Código (ej: PROG-001): ").strip()
+    try:
+        semestre = int(input("  Semestre (número): ").strip())
+    except ValueError:
+        print("  [ERROR] El semestre debe ser un número entero.")
+        return
+    materias.append({"nombre": nombre, "codigo": codigo, "semestre": semestre})
+    print(f"  [OK] Materia '{nombre}' registrada correctamente.")
+
+
+def listar_materias(materias):
+    """Muestra todas las materias registradas."""
+    if not materias:
+        print("  No hay materias registradas.")
+        return
+    print(f"\n  {'Nombre':<30}{'Código':<15}{'Semestre':>10}")
+    print("  " + "-" * 55)
+    for m in sorted(materias, key=lambda x: x["semestre"]):
+        print(f"  {m['nombre']:<30}{m['codigo']:<15}{m['semestre']:>10}")
+
+
+def reporte_por_semestre(alumnos, materias, semestre):
+    """Muestra estadísticas de todas las materias de un semestre dado."""
+    materias_semestre = [m["nombre"] for m in materias if m["semestre"] == semestre]
+    if not materias_semestre:
+        print(f"  [INFO] No hay materias registradas para el semestre {semestre}.")
+        return
+    print(f"\n  Reporte semestre {semestre}")
+    print("  " + "-" * 58)
+    for nombre in materias_semestre:
+        est = estadisticas_materia(alumnos, nombre)
+        if est:
+            print(f"  {nombre:<30} Promedio: {est['promedio']:.2f}  Tasa prom.: {est['tasa_promocion']:.1f}%")
+        else:
+            print(f"  {nombre:<30} Sin notas registradas")
+
+
 def reporte_por_rango_notas(alumnos, nota_min, nota_max):
     """Muestra los alumnos y materias cuyas notas están dentro del rango indicado."""
     if not validar_nota(nota_min) or not validar_nota(nota_max):
@@ -665,6 +712,36 @@ def menu_reportes():
             print("  [ERROR] Opción inválida.")
 
 
+def menu_materias():
+    """Submenú de gestión de materias."""
+    while True:
+        print("\n" + "=" * 45)
+        print("         GESTIÓN DE MATERIAS")
+        print("=" * 45)
+        print("  1. Registrar materia")
+        print("  2. Listar materias")
+        print("  3. Reporte por semestre")
+        print("  0. Volver al menú principal")
+        print("=" * 45)
+
+        eleccion = input("  Seleccione una opción: ").strip()
+
+        if eleccion == "1":
+            registrar_materia(materias)
+        elif eleccion == "2":
+            listar_materias(materias)
+        elif eleccion == "3":
+            try:
+                semestre = int(input("  Número de semestre: ").strip())
+                reporte_por_semestre(alumnos, materias, semestre)
+            except ValueError:
+                print("  [ERROR] Ingrese un número válido.")
+        elif eleccion == "0":
+            break
+        else:
+            print("  [ERROR] Opción inválida.")
+
+
 def menu_principal():
     """Menú principal del sistema."""
     while True:
@@ -674,6 +751,7 @@ def menu_principal():
         print("  1. Gestión de alumnos")
         print("  2. Gestión de notas")
         print("  3. Reportes y estadísticas")
+        print("  4. Gestión de materias")
         print("  0. Salir")
         print("=" * 50)
 
@@ -685,6 +763,8 @@ def menu_principal():
             menu_notas()
         elif eleccion == "3":
             menu_reportes()
+        elif eleccion == "4":
+            menu_materias()
         elif eleccion == "0":
             print("\n  Hasta luego.")
             break
