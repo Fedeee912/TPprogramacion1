@@ -51,7 +51,7 @@ def crear_alumno(alumnos):
 
     alumnos.append(alumno)
     padrones.add(padron)
-    guardar_datos(alumnos)
+    guardar_datos(alumnos, materias)
     print("Alumno creado correctamente")
 
 
@@ -114,7 +114,7 @@ def actualizar_alumno(alumnos, padron):
     elif estado:
         print("  [AVISO] Estado inválido, se conserva el anterior.")
 
-    guardar_datos(alumnos)
+    guardar_datos(alumnos, materias)
     print("  [OK] Datos del alumno actualizados correctamente.")
     return True
 
@@ -128,7 +128,7 @@ def eliminar_alumno(alumnos, padron):
 
     alumnos.remove(alumno)
     padrones.discard(padron)
-    guardar_datos(alumnos)
+    guardar_datos(alumnos, materias)
     print(f"  [OK] Alumno con padrón {padron} eliminado correctamente.")
     return True
 
@@ -166,7 +166,7 @@ def registrar_nota(alumnos, padron, materia, nota):
         return False
 
     alumno["notas"][materia] = float(nota)
-    guardar_datos(alumnos)
+    guardar_datos(alumnos, materias)
     print(f"  [OK] Nota {float(nota)} registrada para {alumno['nombre']} {alumno['apellido']} en '{materia}'.")
     return True
 
@@ -188,7 +188,7 @@ def modificar_nota(alumnos, padron, materia, nota_nueva):
 
     nota_anterior = alumno["notas"][materia]
     alumno["notas"][materia] = float(nota_nueva)
-    guardar_datos(alumnos)
+    guardar_datos(alumnos, materias)
     print(f"  [OK] Nota actualizada en '{materia}': {nota_anterior} → {float(nota_nueva)}")
     return True
 
@@ -205,7 +205,7 @@ def eliminar_nota(alumnos, padron, materia):
         return False
 
     nota_eliminada = alumno["notas"].pop(materia)
-    guardar_datos(alumnos)
+    guardar_datos(alumnos, materias)
     print(f"  [OK] Nota {nota_eliminada} de '{materia}' eliminada para {alumno['nombre']} {alumno['apellido']}.")
     return True
 
@@ -417,6 +417,7 @@ def registrar_materia(materias):
         print("  [ERROR] El semestre debe ser un número entero.")
         return
     materias.append({"nombre": nombre, "codigo": codigo, "semestre": semestre})
+    guardar_datos(alumnos, materias)
     print(f"  [OK] Materia '{nombre}' registrada correctamente.")
 
 
@@ -475,22 +476,24 @@ def reporte_por_rango_notas(alumnos, nota_min, nota_max):
         print("  [INFO] No hay notas en ese rango.")
 
 
-def guardar_datos(alumnos):
-    """Guarda la lista de alumnos en el archivo JSON."""
+def guardar_datos(alumnos, materias):
+    """Guarda alumnos y materias en el archivo JSON."""
+    datos = {"alumnos": alumnos, "materias": materias}
     with open(ARCHIVO_DATOS, "w", encoding="utf-8") as f:
-        json.dump(alumnos, f, indent=4, ensure_ascii=False)
+        json.dump(datos, f, indent=4, ensure_ascii=False)
 
 
 def cargar_datos():
-    """Carga la lista de alumnos desde el archivo JSON.
+    """Carga alumnos y materias desde el archivo JSON.
 
-    Si el archivo no existe o está dañado, devuelve una lista vacía.
+    Si el archivo no existe o está dañado, devuelve listas vacías.
     """
     try:
         with open(ARCHIVO_DATOS, "r", encoding="utf-8") as f:
-            return json.load(f)
+            datos = json.load(f)
+            return datos.get("alumnos", []), datos.get("materias", [])
     except (FileNotFoundError, json.JSONDecodeError):
-        return []
+        return [], []
 
 
 def buscar_por_nombre(alumnos, texto):
@@ -773,7 +776,10 @@ def menu_principal():
 
 
 if __name__ == "__main__":
-    for alumno_guardado in cargar_datos():
+    alumnos_guardados, materias_guardadas = cargar_datos()
+    for alumno_guardado in alumnos_guardados:
         alumnos.append(alumno_guardado)
         padrones.add(alumno_guardado["padron"])
+    for materia_guardada in materias_guardadas:
+        materias.append(materia_guardada)
     menu_principal()
