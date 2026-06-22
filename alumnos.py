@@ -400,6 +400,34 @@ def resumen_ejecutivo(alumnos):
     print("  " + "=" * 45)
 
 
+def reporte_por_rango_notas(alumnos, nota_min, nota_max):
+    """Muestra los alumnos y materias cuyas notas están dentro del rango indicado."""
+    if not validar_nota(nota_min) or not validar_nota(nota_max):
+        print(f"  [ERROR] Rango inválido. Las notas deben estar entre {NOTA_MINIMA} y {NOTA_MAXIMA}.")
+        return
+    if nota_min > nota_max:
+        print("  [ERROR] La nota mínima no puede ser mayor que la máxima.")
+        return
+
+    print(f"\n  Notas entre {nota_min} y {nota_max}")
+    print("  " + "-" * 58)
+
+    encontrados = False
+    for alumno in alumnos:
+        notas_en_rango = {
+            m: n for m, n in alumno["notas"].items()
+            if nota_min <= n <= nota_max
+        }
+        if notas_en_rango:
+            encontrados = True
+            print(f"  {alumno['padron']} - {alumno['nombre']} {alumno['apellido']}:")
+            for materia, nota in notas_en_rango.items():
+                print(f"    {materia:<30} {nota:>4.1f}")
+
+    if not encontrados:
+        print("  [INFO] No hay notas en ese rango.")
+
+
 def guardar_datos(alumnos):
     """Guarda la lista de alumnos en el archivo JSON."""
     with open(ARCHIVO_DATOS, "w", encoding="utf-8") as f:
@@ -609,6 +637,7 @@ def menu_reportes():
         print("  2. Promociones y desaprobaciones por materia")
         print("  3. Reporte por carrera")
         print("  4. Resumen ejecutivo")
+        print("  5. Filtrar notas por rango")
         print("  0. Volver al menú principal")
         print("=" * 45)
 
@@ -623,6 +652,13 @@ def menu_reportes():
             reporte_por_carrera(alumnos)
         elif eleccion == "4":
             resumen_ejecutivo(alumnos)
+        elif eleccion == "5":
+            try:
+                nota_min = float(input("  Nota mínima: ").strip())
+                nota_max = float(input("  Nota máxima: ").strip())
+                reporte_por_rango_notas(alumnos, nota_min, nota_max)
+            except ValueError:
+                print("  [ERROR] Ingrese números válidos.")
         elif eleccion == "0":
             break
         else:
