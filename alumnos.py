@@ -1,4 +1,9 @@
 import re
+import json
+import os
+
+# Ruta del archivo de datos (queda al lado de alumnos.py)
+ARCHIVO_DATOS = os.path.join(os.path.dirname(__file__), "datos_alumnos.json")
 
 # Constantes de notas
 NOTA_MINIMA = 0
@@ -369,6 +374,24 @@ def resumen_ejecutivo(alumnos):
     else:
         print("  Sin notas registradas todavía.")
     print("  " + "=" * 45)
+
+
+def guardar_datos(alumnos):
+    """Guarda la lista de alumnos en el archivo JSON."""
+    with open(ARCHIVO_DATOS, "w", encoding="utf-8") as f:
+        json.dump(alumnos, f, indent=4, ensure_ascii=False)
+
+
+def cargar_datos():
+    """Carga la lista de alumnos desde el archivo JSON.
+
+    Si el archivo no existe o está dañado, devuelve una lista vacía.
+    """
+    try:
+        with open(ARCHIVO_DATOS, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
 
 
 def _pedir_padron():
