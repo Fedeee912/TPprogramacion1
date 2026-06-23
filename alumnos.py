@@ -489,7 +489,7 @@ def exportar_datos(alumnos):
 
     El archivo se crea junto al JSON por defecto con nombre 'datos_alumnos.txt'.
     """
-    rutaActual = os.path.dirname(__name__)
+    rutaActual = os.path.dirname(__file__)
     rutaArchivo = os.path.join(rutaActual, "datos_alumnos.txt")
 
     try:
