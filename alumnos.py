@@ -233,8 +233,8 @@ def consultar_notas_alumno(alumnos, padron):
             estado = "Desaprobado"
         print(f"  {materia:<30} {nota:>4.1f}  [{estado}]")
 
-    notas = list(alumno["notas"].values())
-    promedio = sum(notas) / len(notas)
+    
+    promedio = calcular_promedio_alumno(alumno)
     print("  " + "-" * 40)
     print(f"  Promedio general: {promedio:.2f}")
 
