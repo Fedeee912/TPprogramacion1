@@ -480,6 +480,45 @@ def guardar_datos(alumnos, materias):
         json.dump(datos, f, indent=4, ensure_ascii=False)
 
 
+def exportar_datos(alumnos):
+    """Exporta los datos de los alumnos en formato legible en texto plano.
+
+    Formato por alumno (bloque):
+      Padrón, Apellido Nombre, DNI, Carrera, Email, Estado, Promedio
+      Notas: materia: nota, ...
+
+    El archivo se crea junto al JSON por defecto con nombre 'datos_alumnos.txt'.
+    """
+    rutaActual = os.path.dirname(__name__)
+    rutaArchivo = os.path.join(rutaActual, "datos_alumnos.txt")
+
+    try:
+        with open(rutaArchivo, "wt", encoding="utf-8") as f:
+            if not alumnos:
+                f.write("No hay alumnos registrados.\n")
+                return
+
+            for a in alumnos:
+                promedio = calcular_promedio_alumno(a)
+                f.write(f"Padrón: {a.get('padron','')}\n")
+                f.write(f"Nombre: {a.get('apellido','').title()} {a.get('nombre','').title()}\n")
+                f.write(f"Carrera: {a.get('carrera','')}\n")
+                f.write(f"DNI: {a.get('dni','')}\n")
+                f.write(f"Email: {a.get('email','')}\n")
+                f.write(f"Estado: {a.get('estado','Activo')}\n")
+                f.write(f"Promedio: {promedio:.2f}\n")
+                f.write("Notas:\n")
+                if a.get('notas'):
+                    for m, n in a['notas'].items():
+                        f.write(f"  {m}: {n}\n")
+                else:
+                    f.write("  Sin notas registradas\n")
+                f.write("-" * 40 + "\n")
+        print(f"  [OK] Archivo TXT exportado en: {rutaArchivo}")
+    except OSError as e:
+        print(f"  [ERROR] No se pudo escribir el archivo TXT: {e}")
+
+
 def cargar_datos():
     """Carga alumnos y materias desde el archivo JSON.
 
@@ -523,7 +562,7 @@ def _confirmar(mensaje):
 def _pedir_padron():
     """Solicita y valida un número de padrón (1 a 6 dígitos)."""
     padron = input("  Número de padrón: ").strip()
-    if not re.match(r'^\d{4,6}$', padron):
+    if not re.match(r'^\d{1,6}$', padron):
         print("  [ERROR] El padrón debe tener entre 4 y 6 dígitos numéricos.")
         return None
     return padron
@@ -752,6 +791,7 @@ def menu_principal():
         print("  2. Gestión de notas")
         print("  3. Reportes y estadísticas")
         print("  4. Gestión de materias")
+        print("  5. Exportar datos a TXT")
         print("  0. Salir")
         print("=" * 50)
 
@@ -765,6 +805,8 @@ def menu_principal():
             menu_reportes()
         elif eleccion == "4":
             menu_materias()
+        elif eleccion == "5":
+            exportar_datos(alumnos)
         elif eleccion == "0":
             print("\n  Hasta luego.")
             break

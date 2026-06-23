@@ -1,0 +1,23 @@
+{
+    "alumnos": [
+        {
+            "padron": "12",
+            "nombre": "santiago",
+            "apellido": "gonzalez",
+            "carrera": "ingenieria",
+            "dni": "42647264",
+            "email": "santigonzalez@gmail.com",
+            "estado": "Activo",
+            "notas": {
+                "programacion": 8.0
+            }
+        }
+    ],
+    "materias": [
+        {
+            "nombre": "programacion",
+            "codigo": "prog-001",
+            "semestre": 1
+        }
+    ]
+}
