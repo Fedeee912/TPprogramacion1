@@ -238,6 +238,11 @@ def consultar_notas_alumno(alumnos, padron):
     print("  " + "-" * 40)
     print(f"  Promedio general: {promedio:.2f}")
 
+def sumaRecursiva (lista):
+    """Suma todos los elementos de una lista utilizando recursividad"""
+    if len(lista)==1:
+        return lista[0]
+    return lista[0]+sumaRecursiva(lista[1:])
 
 def calcular_promedio_alumno(alumno):
     """Devuelve el promedio de notas de un alumno. Retorna 0.0 si no tiene notas."""
@@ -245,6 +250,7 @@ def calcular_promedio_alumno(alumno):
     if not notas:
         return 0.0
     return sum(notas) / len(notas)
+
 
 def calcular_promedio_materia(alumnos, materia):
     """Calcula el promedio general de una materia entre todos los alumnos que la tienen registrada."""
