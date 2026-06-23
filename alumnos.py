@@ -249,7 +249,7 @@ def calcular_promedio_alumno(alumno):
     notas = list(alumno["notas"].values())
     if not notas:
         return 0.0
-    return sum(notas) / len(notas)
+    return sumaRecursiva(notas) / len(notas)
 
 
 def calcular_promedio_materia(alumnos, materia):
@@ -257,7 +257,7 @@ def calcular_promedio_materia(alumnos, materia):
     notas = [a["notas"][materia] for a in alumnos if materia in a["notas"]]
     if not notas:
         return None
-    return sum(notas) / len(notas)
+    return sumaRecursiva(notas) / len(notas)
 
 def listar_alumnos_por_materia(alumnos, materia):
     """Muestra todos los alumnos que tienen nota en una materia, con su estado y el promedio general."""
