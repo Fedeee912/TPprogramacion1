@@ -225,12 +225,7 @@ def consultar_notas_alumno(alumnos, padron):
         return
 
     for materia, nota in alumno["notas"].items():
-        if nota >= NOTA_PROMOCION:
-            estado = "Promocionado"
-        elif nota >= NOTA_APROBACION:
-            estado = "Aprobado"
-        else:
-            estado = "Desaprobado"
+        estado=clasificar_estado(nota)
         print(f"  {materia:<30} {nota:>4.1f}  [{estado}]")
 
     
@@ -271,12 +266,7 @@ def listar_alumnos_por_materia(alumnos, materia):
     print("  " + "-" * 50)
 
     for alumno, nota in encontrados:
-        if nota >= NOTA_PROMOCION:
-            estado = "Promocionado"
-        elif nota >= NOTA_APROBACION:
-            estado = "Aprobado"
-        else:
-            estado = "Desaprobado"
+        estado=clasificar_estado(nota)
         print(f"  {alumno['padron']} - {alumno['nombre']} {alumno['apellido']:<20} {nota:>4.1f}  [{estado}]")
 
     promedio = sum(n for _, n in encontrados) / len(encontrados)
